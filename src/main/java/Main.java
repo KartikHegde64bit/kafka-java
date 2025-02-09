@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.io.OutputStream;
 
 public class Main {
   public static void main(String[] args){
@@ -19,6 +20,13 @@ public class Main {
        serverSocket.setReuseAddress(true);
        // Wait for connection from client.
        clientSocket = serverSocket.accept();
+       if(clientSocket != null) {
+           OutputStream clientStream = clientSocket.getOutputStream();
+           byte[] message_id = {0,0,0,0};
+           byte[] correlation_id = {0, 0, 0, 7};
+           clientStream.write(message_id);
+           clientStream.write(correlation_id);
+       }
      } catch (IOException e) {
        System.out.println("IOException: " + e.getMessage());
      } finally {
