@@ -1,4 +1,7 @@
+import Services.ClientService;
+
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.OutputStream;
@@ -21,11 +24,8 @@ public class Main {
        // Wait for connection from client.
        clientSocket = serverSocket.accept();
        if(clientSocket != null) {
-           OutputStream clientStream = clientSocket.getOutputStream();
-           byte[] message_id = {0,0,0,0};
-           byte[] correlation_id = {0, 0, 0, 7};
-           clientStream.write(message_id);
-           clientStream.write(correlation_id);
+           ClientService clientService = new ClientService();
+           clientService.handleClientRequest(clientSocket);
        }
      } catch (IOException e) {
        System.out.println("IOException: " + e.getMessage());
