@@ -11,7 +11,7 @@ public class ResponseHandler {
     public void writeResponse(RequestData requestData, OutputStream clientOutputStream) throws IOException {
 
         ByteArrayOutputStream fullResponse = buildResponse(requestData);
-
+        System.out.println("FullResponse: " + fullResponse.toByteArray());
         // Send response
         clientOutputStream.write(fullResponse.toByteArray());
     }
@@ -47,6 +47,8 @@ public class ResponseHandler {
 
         finalOut.writeInt(messageLength); // First 4 bytes: message length
         finalOut.write(payload);
+        System.out.println("msglength: " + messageLength);
+        System.out.println("payload: " + payload);
         return fullResponse;
     }
 
