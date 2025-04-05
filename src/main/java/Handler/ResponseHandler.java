@@ -42,7 +42,7 @@ public class ResponseHandler {
         ByteArrayOutputStream fullResponse = new ByteArrayOutputStream();
         DataOutputStream finalOut = new DataOutputStream(fullResponse);
 
-        finalOut.writeInt(messageLength); // 4 bytes message length
+        finalOut.writeInt(messageLength); // 4 bytes mdessage length
         finalOut.write(payload);          // full payload
 
         return fullResponse;
