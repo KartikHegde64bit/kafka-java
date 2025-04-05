@@ -24,15 +24,16 @@ public class ResponseHandler {
         // === Response Body ===
         out.writeShort(0); // Error code = 0 (2 bytes)
 
-        writeVarInt(out, 1); // VarInt(1) => compact array size = 1 (1 byte)
+        // API versions list
+        writeVarInt(out, 1);       // One API version
+        out.writeShort(18);        // API key
+        out.writeShort(3);         // Min version
+        out.writeShort(4);         // Max version
+        out.writeByte(0);          // Tagged fields for API version
 
-        out.writeShort(18); // API key = 18 (2 bytes)
-        out.writeShort(3);  // Min version = 3 (2 bytes)
-        out.writeShort(4);  // Max version = 4 (2 bytes)
+// Throttle time
+        out.writeInt(0);           // 4 bytes throttle time (must be after API versions list)
 
-        out.writeByte(0); // Tagged fields (VarInt = 0) (1 byte)
-
-        out.writeInt(0); // Throttle time (4 bytes)
 
         // === Finalize Payload ===
         byte[] payload = responseStream.toByteArray();
