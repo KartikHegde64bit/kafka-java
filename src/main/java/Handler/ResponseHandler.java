@@ -37,7 +37,7 @@ public class ResponseHandler {
 
         // === Finalize Payload ===
         byte[] payload = responseStream.toByteArray();
-        int messageLength = payload.length;
+        int messageLength = payload.length + 6;
 
         ByteArrayOutputStream fullResponse = new ByteArrayOutputStream();
         DataOutputStream finalOut = new DataOutputStream(fullResponse);
