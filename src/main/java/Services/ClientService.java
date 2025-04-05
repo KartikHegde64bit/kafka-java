@@ -1,5 +1,7 @@
 package Services;
 
+import dto.RequestData;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
@@ -13,14 +15,14 @@ public class ClientService {
         try {
             InputStream clientInputStream = clientSocket.getInputStream();
             OutputStream clientOutputStream = clientSocket.getOutputStream();
-            byte[] buffer = new byte[1024];
-            byte[] message_size = new byte[4];
-            byte[] response = {0, 0, 0, 0, 0, 0, 0, 0};
-            if(clientInputStream.read(buffer) != -1) {
-                System.arraycopy(buffer, 0, message_size, 0, 4);
-                System.arraycopy(buffer, 8, response, 4, 4);
-                clientOutputStream.write(response);
-            }
+
+            RequestData requestData = new RequestData(clientInputStream);
+            byte[] response = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+            System.arraycopy(requestData.getMessage_size(), 0, response, 0, 4);
+            System.arraycopy(requestData.getCorrelation_id(), 0, response, 4, 4);
+            response[8] = 0x00;
+            response[9] = 0x23;
+            clientOutputStream.write(response);
         } catch (Exception e) {
             System.out.println(e);
         }
