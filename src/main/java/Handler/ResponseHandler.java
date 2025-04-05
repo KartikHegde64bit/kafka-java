@@ -6,14 +6,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Arrays;
 
 public class ResponseHandler {
     public void writeResponse(RequestData requestData, OutputStream clientOutputStream) throws IOException {
-
         ByteArrayOutputStream fullResponse = buildResponse(requestData);
-        System.out.println("FullResponse: " + Arrays.toString(fullResponse.toByteArray()));
-        // Send response
         clientOutputStream.write(fullResponse.toByteArray());
     }
 
@@ -23,37 +19,35 @@ public class ResponseHandler {
 
         // === Response Header ===
         byte[] correlationId = requestData.getCorrelation_id(); // 4 bytes
-        out.write(correlationId);
+        out.write(correlationId);  // Correlation ID
 
         // === Response Body ===
-        out.writeShort(0); // Error code = 0 (No Error)
+        out.writeShort(0); // Error code = 0 (2 bytes)
 
-        // ✅ FIX: Write 1 (API count) as VarInt
-        writeVarInt(out, 1);
+        writeVarInt(out, 1); // VarInt(1) => compact array size = 1 (1 byte)
 
-        // API key = 18 (API_VERSIONS)
-        out.writeShort(18); // API key
-        out.writeShort(0);  // Min version
-        out.writeShort(4);  // Max version
+        out.writeShort(18); // API key = 18 (2 bytes)
+        out.writeShort(3);  // Min version = 3 (2 bytes)
+        out.writeShort(4);  // Max version = 4 (2 bytes)
 
-        // Required for flexible versions
-        out.writeByte(0); // Empty tagged fields (VarInt = 0)
+        out.writeByte(0); // Tagged fields (VarInt = 0) (1 byte)
 
-        // Finalize payload and prepend message length
+        out.writeInt(0); // Throttle time (4 bytes)
+
+        // === Finalize Payload ===
         byte[] payload = responseStream.toByteArray();
         int messageLength = payload.length;
 
         ByteArrayOutputStream fullResponse = new ByteArrayOutputStream();
         DataOutputStream finalOut = new DataOutputStream(fullResponse);
 
-        finalOut.writeInt(messageLength); // First 4 bytes: message length
-        finalOut.write(payload);
-        System.out.println("msglength: " + messageLength);
-        System.out.println("payload: " + Arrays.toString(payload));
+        finalOut.writeInt(messageLength); // 4 bytes message length
+        finalOut.write(payload);          // full payload
+
         return fullResponse;
     }
 
-
+    // Kafka-style VarInt encoding
     public static void writeVarInt(DataOutputStream out, int value) throws IOException {
         while ((value & 0xFFFFFF80) != 0L) {
             out.writeByte((value & 0x7F) | 0x80);
@@ -61,7 +55,4 @@ public class ResponseHandler {
         }
         out.writeByte(value & 0x7F);
     }
-
-
-
 }
