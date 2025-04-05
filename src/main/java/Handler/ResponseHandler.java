@@ -28,7 +28,7 @@ public class ResponseHandler {
         out.writeShort(0); // Error code = 0 (No Error)
 
         // ✅ FIX: Write 1 (API count) as VarInt
-        //writeVarInt(out, 1);
+        writeVarInt(out, 1);
 
         // API key = 18 (API_VERSIONS)
         out.writeShort(18); // API key
@@ -36,7 +36,7 @@ public class ResponseHandler {
         out.writeShort(4);  // Max version
 
         // Required for flexible versions
-        //out.writeByte(0); // Empty tagged fields (VarInt = 0)
+        out.writeByte(0); // Empty tagged fields (VarInt = 0)
 
         // Finalize payload and prepend message length
         byte[] payload = responseStream.toByteArray();
