@@ -45,9 +45,9 @@ public class RequestData {
         byte[] buffer = new byte[1024];
         if(clientInputStream.read(buffer) != -1) {
             System.arraycopy(buffer, 0, message_size, 0, 4);
-            System.arraycopy(buffer, 0, request_api_key, 4, 2);
-            System.arraycopy(buffer, 0, request_api_version, 6, 2);
-            System.arraycopy(buffer, 4, correlation_id, 8, 4);
+            System.arraycopy(buffer, 4, request_api_key, 0, 2);
+            System.arraycopy(buffer, 6, request_api_version, 0, 2);
+            System.arraycopy(buffer, 8, correlation_id, 0, 4);
         }
 
 
