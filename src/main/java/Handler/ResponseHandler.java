@@ -36,7 +36,7 @@ public class ResponseHandler {
         out.writeShort(4);  // Max version
 
         // Required for flexible versions
-        out.writeByte(0); // Empty tagged fields (VarInt = 0)
+        //out.writeByte(0); // Empty tagged fields (VarInt = 0)
 
         // Finalize payload and prepend message length
         byte[] payload = responseStream.toByteArray();
